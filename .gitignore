@@ -1,0 +1,28 @@
+build*/
+__pycache__/
+
+# Upstream checkouts used as reverse-engineering references (see README)
+reference/
+
+# Headless IDA output (regenerate with re_dump/dump.py + dumpasm.py + vtables.py, see README)
+re_dump/*.i64
+re_dump/*.id[0-2]
+re_dump/*.nam
+re_dump/*.til
+re_dump/*.log
+re_dump/orig.dll
+re_dump/all.c
+re_dump/all.asm
+re_dump/funcs.json
+re_dump/names.json
+re_dump/vtables.json
+re_dump/strings.txt
+re_dump/progress.txt
+re_dump/done.txt
+re_dump/skip.txt
+re_dump/fails.txt
+compile_commands.json
+test/data/
+
+# tools/classify.py output (regenerable from the IDA dumps)
+notes/classification.tsv

@@ -1,0 +1,21 @@
+; pimax_slam.def -- exports of pimax_slam.pi.dll (reconstructed, chunk c14_interface_api).
+;
+; The original export directory has 3414 names (ordinal base 1), sorted by name and numbered
+; consecutively: 322 boost::serialization symbols ("?..."), the 10 Headset* functions, and GLEW
+; (__GLEW_* / __glew* / glew* / wglew*). The Headset* functions sit at ordinals 323..332
+; (name-pointer indices 322..331, hints 0x142..0x14B). pi_server.exe imports by name only, so the
+; explicit ordinals below only matter for byte-level comparison of the export table; when the same
+; static libraries (GLEW, boost serialization built with dllexport) are linked, the linker's
+; alphabetical numbering reproduces the same ordinals anyway.
+LIBRARY "pimax_slam.pi.dll"   ; export-directory name "pimax_slam.pi.dll", timestamp 0xFFFFFFFF
+EXPORTS
+    HeadsetGetGroundState   @323    ; RVA 0x162340
+    HeadsetGetLocModeState  @324    ; RVA 0x162360
+    HeadsetGetVersion       @325    ; RVA 0x162380
+    HeadsetInitialImpl      @326    ; RVA 0x162390
+    HeadsetLeftImageNumber  @327    ; RVA 0x162510
+    HeadsetPutCameraImage   @328    ; RVA 0x162530
+    HeadsetPutHmdImuData    @329    ; RVA 0x162D70
+    HeadsetReleaseImpl      @330    ; RVA 0x162DF0
+    HeadsetSetDeviceEnable  @331    ; RVA 0x162E30
+    HeadsetSetTrackingMode  @332    ; RVA 0x162E60

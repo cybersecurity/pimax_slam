@@ -1,0 +1,44 @@
+[submodule "third_party/eigen"]
+	path = third_party/eigen
+	url = https://gitlab.com/libeigen/eigen.git
+	shallow = true
+[submodule "third_party/glog"]
+	path = third_party/glog
+	url = https://github.com/google/glog.git
+	shallow = true
+[submodule "third_party/gflags"]
+	path = third_party/gflags
+	url = https://github.com/gflags/gflags.git
+	shallow = true
+[submodule "third_party/tinyxml2"]
+	path = third_party/tinyxml2
+	url = https://github.com/leethomason/tinyxml2.git
+	shallow = true
+[submodule "third_party/ceres-solver"]
+	path = third_party/ceres-solver
+	url = https://github.com/ceres-solver/ceres-solver.git
+	shallow = true
+[submodule "third_party/DBoW2"]
+	path = third_party/DBoW2
+	url = https://github.com/dorian3d/DBoW2.git
+	shallow = true
+[submodule "third_party/DBow3"]
+	path = third_party/DBow3
+	url = https://github.com/rmsalinas/DBow3.git
+	shallow = true
+[submodule "third_party/minkindr"]
+	path = third_party/minkindr
+	url = https://github.com/ethz-asl/minkindr.git
+	shallow = true
+[submodule "third_party/fast"]
+	path = third_party/fast
+	url = https://github.com/uzh-rpg/fast.git
+	shallow = true
+[submodule "third_party/opencv"]
+	path = third_party/opencv
+	url = https://github.com/opencv/opencv.git
+	shallow = true
+[submodule "third_party/opencv_contrib"]
+	path = third_party/opencv_contrib
+	url = https://github.com/opencv/opencv_contrib.git
+	shallow = true
