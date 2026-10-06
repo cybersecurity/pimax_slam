@@ -126,6 +126,20 @@ probe(0x180157240, via)
   schur_eliminator.cc}` (line numbers of all remaining sites unchanged), PIMAX_PATCH.md item 6.
 * `test/ab_log_diff.sh` now also compares the replayer's stdout/stderr.
 
+### 7. LoopClosing::reLocalizeThread: missing exception handlers (found in the code review, not by the tests)
+
+* Symptom: none on the test traces (the path never throws there). An exception from the PlatMap
+  update/save or from `runReLocalization` would have left the thread function and called `std::terminate`,
+  where the original logs it and keeps running.
+* Evidence: the `__CxxFrameHandler4` data of 0x18018B3D0 has one try block (EH states around
+  0x18018B4EC..0x18018B52F: the PlatMap update/save and the `runReLocalization` call) with four handlers
+  in this order: `cv::Exception` (funclet 0x1803A16A0, "ReLocalize: OpenCV exception code=%d: %s"),
+  `std::bad_alloc` (0x1803A1660, "ReLocalize: allocation failure: %s"), `std::exception` (0x1803A1620,
+  "ReLocalize: exception: %s") and `...` (0x1803A15E0, "ReLocalize: unknown exception"). Each logs with
+  LOGE (0x18000C2C0) and continues after the try. The four strings were missing from the rebuilt DLL
+  and are present now.
+* File: `src/loop_closing/loop_closing.cpp`.
+
 ## Notes on the original's own nondeterminism
 
 The deterministic test copy of the original is still not run-to-run deterministic after a few seconds of

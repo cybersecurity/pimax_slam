@@ -20,9 +20,11 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <exception>
 #include <fstream>
 #include <functional>
 #include <iterator>
+#include <new>
 #include <sstream>
 #include <tuple>
 #include <unordered_map>
@@ -890,6 +892,11 @@ bool LoopClosing::bundleAdjustKfList(std::vector<std::vector<KeyFramePtr>>& kf_l
 // ===============================================================================================
 // 0x18018b3d0  reLocalizeThread -- pimax-new.  Besides running the relocalization it pushes the
 // session into the PlatMap (and saves it) once 200 bundles have been collected.
+// The PlatMap update/save and the relocalization run inside one try block (FH4 try map of
+// 0x18018B3D0: states around 0x18018B4EC..0x18018B52F) with four handlers, in this order:
+// cv::Exception (funclet 0x1803A16A0), std::bad_alloc (0x1803A1660), std::exception
+// (0x1803A1620) and catch(...) (0x1803A15E0). Each logs through LOGE and execution continues
+// after the try, so a failed relocalization does not end the thread.
 // ===============================================================================================
 void LoopClosing::reLocalizeThread()
 {
@@ -901,24 +908,43 @@ void LoopClosing::reLocalizeThread()
     {
       return;
     }
-    if (!platmap_built_)
+    try
     {
-      std::unique_lock<std::mutex> kf_lock(kf_list_mutex_);
-      if (kf_list_.size() >= 200)
+      if (!platmap_built_)
       {
-        plat_map_->UpdateMap(kf_list_, map_id_);
-        kf_lock.unlock();
-        platmap_built_ = true;
-        save();
+        std::unique_lock<std::mutex> kf_lock(kf_list_mutex_);
+        if (kf_list_.size() >= 200)
+        {
+          plat_map_->UpdateMap(kf_list_, map_id_);
+          kf_lock.unlock();
+          platmap_built_ = true;
+          save();
+        }
+        else
+        {
+          kf_lock.unlock();
+        }
       }
-      else
+      if (reloc_busy_)
       {
-        kf_lock.unlock();
+        runReLocalization();
       }
     }
-    if (reloc_busy_)
+    catch (const cv::Exception& e)
     {
-      runReLocalization();
+      LOGE("ReLocalize: OpenCV exception code=%d: %s\n", e.code, e.what());
+    }
+    catch (const std::bad_alloc& e)
+    {
+      LOGE("ReLocalize: allocation failure: %s\n", e.what());
+    }
+    catch (const std::exception& e)
+    {
+      LOGE("ReLocalize: exception: %s\n", e.what());
+    }
+    catch (...)
+    {
+      LOGE("ReLocalize: unknown exception\n");
     }
     clearReLocFrames();   // inlined in the binary
     reloc_busy_ = false;
